@@ -5,9 +5,6 @@ import { fail, json, requireAdmin } from "@/lib/http";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  const denied = await requireAdmin();
-  if (denied) return denied;
-
   try {
     const body = (await request.json().catch(() => null)) as {
       id?: unknown;
@@ -18,8 +15,14 @@ export async function POST(request: Request) {
     const code = typeof body?.code === "string" ? body.code : "";
     if (!id && !code) throw new AppError("Informe o código da etiqueta.");
 
-    if (body?.undo) return json({ participant: await undoDelivery({ id, code }) });
-    return json(await confirmDelivery({ id, code }));
+    // A URL da etiqueta já identifica o franqueado. Sem o código, só a equipe logada confirma.
+    if (!code) {
+      const denied = await requireAdmin();
+      if (denied) return denied;
+    }
+
+    if (body?.undo) return json({ participant: await undoDelivery(code ? { code } : { id }) });
+    return json(await confirmDelivery(code ? { code } : { id }));
   } catch (error) {
     return fail(error);
   }

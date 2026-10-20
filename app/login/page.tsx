@@ -43,7 +43,7 @@ export default function LoginPage() {
         <form className="login-card" onSubmit={submit}>
           <p className="eyebrow">Área da equipe</p>
           <h1>Entrar</h1>
-          <p className="helper">Use a senha da convenção para cadastrar franqueados e confirmar a entrega dos kits.</p>
+          <p className="helper">Use a senha da convenção para cadastrar franqueados e abrir o painel. A leitura do QR confirma a entrega sem login.</p>
           <label className="field">
             <span>Senha</span>
             <input

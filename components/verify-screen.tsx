@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { useState } from "react";
 import { Logo } from "@/components/logo";
 import { api, isAuthError } from "@/lib/client";
 import { formatWhen } from "@/lib/format";
@@ -21,11 +21,6 @@ export function VerifyScreen({ code, participant, authed }: Props) {
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const loginHref = useMemo(() => {
-    const next = current ? `/v/${current.code}` : `/v/${code}`;
-    return `/login?next=${encodeURIComponent(next)}`;
-  }, [code, current]);
 
   async function confirm() {
     if (!current) return;
@@ -133,7 +128,7 @@ export function VerifyScreen({ code, participant, authed }: Props) {
 
               {error ? <p className="field-error">{error}</p> : null}
 
-              {phase === "details" && logged ? (
+              {phase === "details" ? (
                 <button type="button" className="btn btn-lime btn-lg" onClick={() => setPhase("confirm")}>
                   Confirmar entrega do kit
                 </button>
@@ -151,12 +146,6 @@ export function VerifyScreen({ code, participant, authed }: Props) {
                 </div>
               ) : null}
 
-              {phase === "details" && !logged ? (
-                <Link className="btn btn-lime btn-lg" href={loginHref}>
-                  Entrar para confirmar
-                </Link>
-              ) : null}
-
               {phase === "done" || phase === "already" ? (
                 <div className="stack">
                   {logged ? (
@@ -164,11 +153,9 @@ export function VerifyScreen({ code, participant, authed }: Props) {
                       Próxima etiqueta
                     </Link>
                   ) : null}
-                  {logged ? (
-                    <button type="button" className="btn btn-ghost btn-block" onClick={undo} disabled={busy}>
-                      Desfazer, foi um engano
-                    </button>
-                  ) : null}
+                  <button type="button" className="btn btn-ghost btn-block" onClick={undo} disabled={busy}>
+                    Desfazer, foi um engano
+                  </button>
                 </div>
               ) : null}
             </div>
