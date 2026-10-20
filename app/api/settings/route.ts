@@ -4,7 +4,7 @@ import { fail, json, requireAdmin } from "@/lib/http";
 
 export const runtime = "nodejs";
 
-export function normalizeBaseUrl(value: unknown): string {
+function normalizeBaseUrl(value: unknown): string {
   if (typeof value !== "string") throw new AppError("Informe o endereço das etiquetas.");
   const trimmed = value.trim();
   if (!trimmed) return "";
